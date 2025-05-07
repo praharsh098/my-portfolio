@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "Frontend Developer",
+    "company": "TechHive",
+    "location": "Remote",
+    "description": "Build React interfaces",
+    "apply_url": "https://example.com/apply1"
+  },
+  {
+    "id": 2,
+    "title": "Backend Engineer",
+    "company": "CodeBase",
+    "location": "Bangalore",
+    "description": "Build Flask APIs",
+    "apply_url": "https://example.com/apply2"
+  }
+]

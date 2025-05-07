@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/*.pyo": true,
+    "**/*.env": true
+  },
+
+  "python.formatting.provider": "autopep8",
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+
+  "eslint.validate": ["javascript", "javascriptreact", "typescriptreact"],
+  "prettier.singleQuote": true,
+  "prettier.semi": true
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 101,
+    "title": "Full Stack Developer",
+    "company": "DevNation",
+    "location": "Remote",
+    "description": "Build and maintain web apps using React and Node.js."
+  },
+  {
+    "id": 102,
+    "title": "AI Research Assistant",
+    "company": "Visionary AI",
+    "location": "Delhi",
+    "description": "Assist in developing ML models and publish papers."
+  },
+  {
+    "id": 103,
+    "title": "Data Analyst Intern",
+    "company": "Insights Inc.",
+    "location": "Remote",
+    "description": "Analyze and visualize company data using Python and SQL."
+  }
+]
