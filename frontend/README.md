@@ -40,7 +40,7 @@ job-auto-apply-app/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/job-auto-apply-app.git
+git clone https://github.com/username/job-auto-apply-app.git
 cd job-auto-apply-app
 
 ### BACKEND SETUP(Flask)
@@ -95,3 +95,4 @@ Assisted by OpenAI's GPT-based guidance
 
 📄 License
 MIT License - free to use, modify and distribute.
+```

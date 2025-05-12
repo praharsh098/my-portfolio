@@ -1,115 +1,120 @@
-.App {
+/* General layout */
+body {
+  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
-  max-width: 1000px;
-  margin: auto;
   background-color: #f9f9f9;
   color: #333;
 }
 
-h1 {
+.App {
   text-align: center;
-  color: #444;
+  padding: 20px;
 }
 
-.upload-box,
-.filter-box {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Resume upload section */
+.upload-box {
+  margin-bottom: 30px;
 }
 
-.upload-box input,
-.filter-box input {
+.upload-box input[type="file"] {
+  margin-right: 10px;
+}
+
+/* Filter controls */
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters select, .filters input {
+  margin: 0 10px 10px 0;
   padding: 8px;
-  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
-.upload-box button,
-.filter-box button {
-  padding: 8px 16px;
-  font-size: 16px;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.upload-box button:hover {
-  background-color: #0056b3;
-}
-
+/* Job list section */
 .job-section {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .job-card {
-  background: white;
-  border: 1px solid #ccc;
-  padding: 16px;
-  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
   cursor: pointer;
-  transition: box-shadow 0.2s;
 }
 
 .job-card:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
 }
 
+/* Buttons inside job card */
 .swipe-buttons {
   margin-top: 10px;
 }
 
 .swipe-buttons button {
-  margin-right: 10px;
-  padding: 6px 14px;
-  font-size: 14px;
-  cursor: pointer;
+  margin: 5px;
+  padding: 8px 14px;
   border: none;
   border-radius: 4px;
+  cursor: pointer;
+  color: white;
 }
 
 .swipe-buttons button:first-child {
-  background-color: #e0e0e0;
+  background-color: #888;
 }
 
 .swipe-buttons button:last-child {
-  background-color: #28a745;
-  color: white;
+  background-color: #007bff;
 }
 
+/* Job detail modal */
 .job-detail {
-  background: #fff;
-  border: 1px solid #ddd;
+  background-color: #fff;
+  border: 2px solid #007bff;
+  border-radius: 10px;
   padding: 20px;
-  margin-top: 20px;
-  border-radius: 6px;
+  margin-top: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
 }
 
 .job-detail button {
-  margin-top: 20px;
-  padding: 8px 16px;
-  background-color: #dc3545;
+  margin-top: 10px;
+  background-color: #444;
   color: white;
+  padding: 8px 14px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.job-detail button:hover {
-  background-color: #c82333;
-}
-
-p {
-  margin: 8px 0;
-}
-
+/* Responsive tweaks */
 @media (max-width: 768px) {
-  .upload-box,
-  .filter-box {
+  .job-section {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filters select,
+  .filters input {
+    width: 90%;
   }
 }

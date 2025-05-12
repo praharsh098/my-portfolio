@@ -1,15 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Country, State } from 'country-state-city';
 import './App.css';
 
 function App() {
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
   const [message, setMessage] = useState('');
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [locationFilter, setLocationFilter] = useState('');
-  const [keywordFilter, setKeywordFilter] = useState('');
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedState, setSelectedState] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  useEffect(() => {
+    console.log("Fetching jobs...");
+    fetch('https://remotive.io/api/remote-jobs')
+      .then((res) => res.json())
+      .then((data) => {
+        setJobs(data.jobs);
+        setFilteredJobs(data.jobs);
+      })
+      .catch((err) => console.error('Failed to load jobs:', err));
+  }, []);
+
+  useEffect(() => {
+    const countryList = Country.getAllCountries();
+    setCountries(countryList);
+  }, []);
+
+  const handleCountryChange = (e) => {
+    const countryCode = e.target.value;
+    setSelectedCountry(countryCode);
+    const stateList = State.getStatesOfCountry(countryCode);
+    setStates(stateList);
+    setSelectedState('');
+  };
+
+  const handleStateChange = (e) => {
+    setSelectedState(e.target.value);
+  };
+
+  const handleSearch = () => {
+    let filtered = jobs;
+
+    if (selectedCountry) {
+      filtered = filtered.filter((job) =>
+        job.candidate_required_location.toLowerCase().includes(selectedCountry.toLowerCase())
+      );
+    }
+
+    if (selectedState) {
+      filtered = filtered.filter((job) =>
+        job.candidate_required_location.toLowerCase().includes(selectedState.toLowerCase())
+      );
+    }
+
+    if (searchKeyword) {
+      filtered = filtered.filter((job) =>
+        job.title.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+
+    setFilteredJobs(filtered);
+  };
+
+  const handleFileChange = (e) => {
+    setResumeFile(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!resumeFile) {
+      setMessage('Please select a file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('resume', resumeFile);
+
+    try {
+      const res = await axios.post('http://localhost:5000/upload-resume', formData);
+      const data = res.data;
+      setMessage(data.message + ' 📄 Extracted keywords: ' + data.keywords.join(', '));
+    } catch (err) {
+      console.error(err);
+      setMessage('Upload failed.');
+    }
+  };
 
   const handleSwipe = async (e, action, job) => {
     e.stopPropagation();
@@ -34,56 +113,6 @@ function App() {
     }
   };
 
-  const handleFileChange = (e) => {
-    setResumeFile(e.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!resumeFile) {
-      setMessage('Please select a file first.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('resume', resumeFile);
-
-    try {
-      const res = await axios.post('http://localhost:5000/upload-resume', formData);
-      const data = res.data;
-      setMessage(data.message + " 📄 Extracted keywords: " + data.keywords.join(", "));
-      console.log("Resume Text Snippet:", data.text_snippet);
-    } catch (err) {
-      console.error(err);
-      setMessage('Upload failed.');
-    }
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    fetch('https://remotive.io/api/remote-jobs')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.jobs && Array.isArray(data.jobs)) {
-          setJobs(data.jobs);
-        } else {
-          setJobs([]);
-          console.error("Unexpected job response format");
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load jobs:', err);
-        setJobs([]);
-        setMessage('Failed to fetch jobs.');
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filteredJobs = jobs.filter((job) => {
-    const matchLocation = locationFilter === '' || job.candidate_required_location.toLowerCase().includes(locationFilter.toLowerCase());
-    const matchKeyword = keywordFilter === '' || job.title.toLowerCase().includes(keywordFilter.toLowerCase());
-    return matchLocation && matchKeyword;
-  });
-
   return (
     <div className="App">
       <h1>Job Application Portal</h1>
@@ -95,33 +124,39 @@ function App() {
         <p>{message}</p>
       </div>
 
-      {/* Filter Options */}
+      {/* Filters */}
       <div className="filter-box">
-        <input
-          type="text"
-          placeholder="Filter by location..."
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by keyword..."
-          value={keywordFilter}
-          onChange={(e) => setKeywordFilter(e.target.value)}
-        />
-      </div>
+        <select value={selectedCountry} onChange={handleCountryChange}>
+          <option value="">Select Country</option>
+          {countries.map((country) => (
+            <option key={country.isoCode} value={country.name}>
+              {country.name}
+            </option>
+          ))}
+        </select>
 
-      {/* Loading Message */}
-      {loading && <p>Loading jobs...</p>}
+        <select value={selectedState} onChange={handleStateChange} disabled={!selectedCountry}>
+          <option value="">Select State</option>
+          {states.map((state) => (
+            <option key={state.isoCode} value={state.name}>
+              {state.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Search by keyword"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
 
       {/* Job Cards */}
       <div className="job-section">
         {filteredJobs.map((job) => (
-          <div
-            key={job.id}
-            className="job-card"
-            onClick={() => setSelectedJob(job)}
-          >
+          <div key={job.id} className="job-card" onClick={() => setSelectedJob(job)}>
             <h2>{job.title}</h2>
             <h4>{job.company_name}</h4>
             <p>{job.candidate_required_location}</p>
@@ -138,10 +173,8 @@ function App() {
         <div className="job-detail">
           <h2>{selectedJob.title}</h2>
           <h3>{selectedJob.company_name}</h3>
-          <p>
-            <strong>Location:</strong> {selectedJob.candidate_required_location}
-          </p>
-          <p dangerouslySetInnerHTML={{ __html: selectedJob.description }} />
+          <p><strong>Location:</strong> {selectedJob.candidate_required_location}</p>
+          <p dangerouslySetInnerHTML={{ __html: selectedJob.description }}></p>
           <button onClick={() => setSelectedJob(null)}>Close</button>
         </div>
       )}
